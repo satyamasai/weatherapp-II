@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c1f6d516b6.js" crossorigin="anonymous"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <title>Document</title>
+    <style>
+        body{
+            background-image: url('https://wallpapercave.com/wp/wp3980172.jpg');
+        }
+        #weather_div{
+          
+            width: 100%;
+            height: auto;
+            /* border: 1px solid red; */
+            /* margin: auto; */
+            padding: 10px;
+            /* font-size: 20px; */
+            line-height: 5px;
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(8,1fr);
+            grid-template-rows: repeat(2,auto);
+        }
+        #weather_div>div{
+            border: 1px solid grey;
+            border-top: none;
+            border-left: none;
+            text-align: center;
+        }
+        #temp{
+            display: inline;
+        }
+       
+        .parent{
+            display: flex;
+            /* border: 2px solid green; */
+        }
+        #gmap_canvas{
+          border-radius: 10px;
+      }
+      .navbar{
+          height: 50px;
+          display: flex;
+          /* border: 1px solid black; */
+          justify-content: center;
+          /* align-items: center; */
+      }
+      input{
+          border: 5px solid red;
+          border-radius: 12px;
+          background: transparent;
+      }
+      button{
+          font-size: 30px;
+          border-radius: 12px;
+          background: transparent;
+          border: none;
+      }
+      #mycity{
+          color: red;
+          font-size: 40px;
+          font-style: italic;
+      }
+      
+    </style>
+</head>
+<body>
+ 
+    <!-- <img src="https://thumbs.dreamstime.com/b/landscape-mountain-abstract-gradient-bg-vector-beautiful-misty-fog-slopes-background-illustration-104891801.jpg" alt=""> -->
+    <div class="navbar">
+        <input id="city" type="text" placeholder="Enter city name">
+        <button onclick="myFun()" id="weather"> <i class="fas fa-search"></i></button>
+    </div>
+    <img id="up" src="" alt="">
+    <h2 id="mycity"></h2>
+    <div id="weather_div">
+       
+       
+         
+          
+   </div>
+   <!-- <div style="margin-top: 100px;" class="mapouter">
+    <div class="gmap_canvas">
+    <iframe width="417" height="291" id="gmap_canvas"
+    
+     frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+ 
+    </iframe>
+</div>
+
+  
+</div> -->
+
+
+  <h4>
+      the data is shown in celcius.
+  </h4>
+    
+</body>
+</html>
+<script>
+    //API-key in const-----------------------------------------------------------------
+      const api_key="aa9ca52b43f3bd35de4ad898b506f777";
+    //   ------------------------------------------------------
+   
+    // ---------------fetching API +async func for promise-------
+      async function myFun(){
+        
+        
+
+        var city= document.getElementById("city").value
+
+         let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=aa9ca52b43f3bd35de4ad898b506f777&units=metric`;
+
+         let res = await fetch(url)
+         
+         let data = await res.json();
+
+if(data.name!=null){
+    //append(data); 
+    dailyWeather(data)
+}else{
+    
+    error()
+}
+       
+         
+    }
+
+// --------errfun-----
+function error(){
+    let city=document.getElementById("mycity")
+        city.innerText="City not found"
+        let weather_div=document.getElementById("weather_div")
+        weather_div.innerHTML=null;
+
+      let img=document.getElementById("up")
+      img.src="https://www.reinforcedesigns.com/onlinemin/default-img/empty1.png"
+
+      setInterval(function(){
+         window.location.reload();
+      },2000)
+    //  weather_div.append(img)
+}
+
+// ------------append part seperate function-------------------
+
+    // function append(data){
+       
+        
+       
+    //     let img=document.getElementById("up")
+    //   img.src="";
+
+
+    //     //let iframe=document.getElementById("gmap_canvas")
+    //     //iframe.src=`https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+
+    //     let up=document.getElementById("up")
+       
+
+    //      let city= document.getElementById("city").value;
+    //     // console.log(city);
+         
+    //      let city_name = document.getElementById("city_name")
+    //     //  city_name.innerText = null;
+    //      city_name.innerText = data.city.name + ;
+
+    //      let temp= document.getElementById("temp")
+    //      temp.innerText="Temp : "+Math.ceil(+data.main.temp-273);
+    //     //temp.innerText=$(temp).unbind().append((Math.round(data.main.temp - 273.15)) + '&deg;');
+    //     let weather= document.getElementById("weather1")
+    //     weather.innerText= "Weather : "+data.weather[0].main;  
+      
+    //      let temp_max=  document.getElementById("temp_max")
+    //      temp_max.innerText= "Temp Max: "+Math.ceil(data.main.temp_max-273)
+
+    //      let temp_min= document.getElementById("temp_min")
+    //      temp_min.innerText="Temp Min. : "+Math.ceil(data.main.temp_min-273)
+
+    //      let sunrise=document.getElementById("sunrise")
+    //      sunrise.innerText=data.sys.sunrise
+
+    //      let sunset=document.getElementById("sunset")
+    //      sunset.innerText=data.sys.sunset
+          
+        //  weather_div.append(img,city_name,temp,temp_max,temp_min)
+
+ 
+    //}
+
+
+
+    async function dailyWeather(data){
+        console.log(data);
+        let weather_div=document.getElementById("weather_div")
+        weather_div.innerHTML=null;
+
+        console.log(data.name);
+        let city=document.getElementById("mycity")
+        city.innerText=data.name +"- "+ data.main.temp
+          let lat= data.coord.lat;
+          let lon= data.coord.lon;
+
+          //let url=`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=hourly,daily&appid=${api_key}`
+         // let url1=`https://api.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&cnt=8&appid=${api_key}`
+         let url1=`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${api_key}&cnt=40&units=metric`;
+          console.log(lat,lon)
+          //console.log(url1);
+
+          let resolve= await fetch(url1);
+          let data1 = await resolve.json();
+          let dayarr=data1.list;
+          console.log(data1);
+        console.log(dayarr)
+
+        
+        
+        
+        dayarr.forEach(function(element){
+            let weather_div=document.getElementById("weather_div")
+                           let div= document.createElement("div")
+                           let  date= document.createElement("h4")
+                           date.innerText=element.dt_txt
+                           console.log(date.innerText);
+                           let  temp= document.createElement("p")
+                           temp.innerText="Temp : "+element.main.temp
+                           let=  mintemp= document.createElement("p")
+                           mintemp.innerText="Min-Temp : "+element.main.temp_min
+                           let  maxtemp= document.createElement("p")
+                           maxtemp.innerText="Min-Temp : "+element.main.temp_max
+
+                           div.append(date,temp,mintemp,maxtemp)
+                           weather_div.append(div)
+        })
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+</script>
